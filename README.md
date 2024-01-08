@@ -5,6 +5,6 @@ make changes in vision.py detection function which return (** still have to chan
 1) landmark_ids: shape (m,)
 2) landmark_rs: shape (m,) - distance to landmark
 3) landmark_alphas: shape (m,) - angle to landmark
-4) landmark_positions: shape (m, 2) - list of (x, y)
+4) landmark_positions: shape (m, 2) - list of (x, y) -> aruco marker transform w.r.t. robot base
 
-Next step: figure out how to call this function from publisher, and change these return values to world_coordinate system. 
+Next step: figure out how to call this function from publisher, and world_coordinate system from transform2. 
