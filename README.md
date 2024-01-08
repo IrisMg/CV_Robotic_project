@@ -1,6 +1,6 @@
 # CV_Robotic_project
 
-make changes in vision.py detection function which return (** still have to change the alphas/angle which angle to take: for now take the yaw, and the camera w.r.t robot has to change)
+make changes in vision.py detection function which return (** still have to change the alphas/angle which angle to take: for now took the yaw, and the camera w.r.t robot has to change)
 
 1) landmark_ids: shape (m,)
 2) landmark_rs: shape (m,) - distance to landmark
