@@ -81,6 +81,7 @@ class Publisher():
                 cv2.putText(img ,f"ID:{ID}" ,bottom_left ,font ,fontsize ,color ,thickness ,cv2.LINE_AA)
                 cv2.drawFrameAxes(img ,camera_matrix ,dist_coeffs ,rvec ,tvec ,3 ,2)
 
+        return corners, ids, camera_matrix, dist_coeffs, rvecs, tvecs
     # ------------------------------------------------------------------------------------------------------------------------------------------
 
 
