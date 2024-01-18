@@ -8,14 +8,15 @@ from scipy import optimize
 from enum import Enum
 from utils.utils import boundary
 import cv2.aruco as aruco
-
+import math
 
 class Vision:
-    def __init__(self, camera_matrix, dist_coeffs, cam_config) -> None:
+    def __init__(self, camera_matrix, dist_coeffs, cam_config, world_coord) -> None:
 
         self.camera_matrix = camera_matrix
         self.dist_coeffs = dist_coeffs
         self.cam_config = cam_config
+        self.world_coord = world_coord
     
     # function to convert rvec, tvec to transform matrix
     @staticmethod
@@ -26,6 +27,8 @@ class Vision:
         tf[:3, :3] = rot_matrix
         tf[:3, 3] = tvec
         return tf
+
+    world_coord = None
 
     def detections(self, img: np.ndarray, draw_img:np.ndarray, robot_pose: tuple, kind: str = "aruco") -> tuple:
         #ids, landmark_rs, landmark_alphas, landmark_positions = [222], [1.70], [2.], [[2,1]]
@@ -66,8 +69,8 @@ class Vision:
             print(aruco_tf)
 
             # camera transform w.r.t. robot base
-            rvec = [np.radians(-90), 0, np.radians(-135)]
-            tvec = [0, 0.03, 0.20]  # in meters
+            rvec = [np.radians(0), np.radians(-30), np.radians(0)]  #have to change the camera angle????
+            tvec = [0, 0, 0.20]  # in meters assuming camera is above 0.20 from robot base
             camera_tf = Vision.to_tf(rvec, tvec, order="ZYX")
 
             # Print the camera_tf
@@ -84,7 +87,18 @@ class Vision:
             # we can read out x, y, z coordinates of aruco marker transform w.r.t. robot base
             print(f"x = {aruco_robot_tf[0,3]}")
             print(f"y = {aruco_robot_tf[1,3]}")
-            landmark_positions = landmark_positions.append(aruco_robot_tf[0,3], aruco_robot_tf[1,3])
+            print(f"z = {aruco_robot_tf[2, 3]}")
+
+            # Assign world_coord only if it's not already assigned
+            if self.world_coord is None:
+                self.world_coord = (aruco_robot_tf[0,3],aruco_robot_tf[1,3],aruco_robot_tf[2, 3])       
+
+            # Compute landmark_positions using Pythagorean theorem
+            x_coordinate = self.world_coord[0] + (aruco_robot_tf[0, 3] - self.world_coord[0])
+            y_coordinate = self.world_coord[1] + (aruco_robot_tf[1, 3] - self.world_coord[1])
+            z_coordinate = self.world_coord[2] + (aruco_robot_tf[2, 3] - self.world_coord[2])
+    
+            landmark_positions.append((x_coordinate, y_coordinate, z_coordinate))
 
         return ids, landmark_rs, landmark_alphas, landmark_positions
 

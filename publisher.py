@@ -30,6 +30,9 @@ class Publisher():
 
         self.jpeg_quality = 50  # 0 to 100, higher is better quality, 95 is cv2 default
 
+        # Create an instance of the Vision class
+        self.vision_instance = Vision()
+
     def __enter__(self):
         self.sender = imagezmq.ImageSender(connect_to='tcp://*:5555', REQ_REP=False)
 
@@ -80,7 +83,7 @@ class Publisher():
 
                 cv2.putText(img ,f"ID:{ID}" ,bottom_left ,font ,fontsize ,color ,thickness ,cv2.LINE_AA)
                 cv2.drawFrameAxes(img ,camera_matrix ,dist_coeffs ,rvec ,tvec ,3 ,2)
-
+                
         return corners, ids, camera_matrix, dist_coeffs, rvecs, tvecs
     # ------------------------------------------------------------------------------------------------------------------------------------------
 
